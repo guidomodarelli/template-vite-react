@@ -1,0 +1,37 @@
+x-volumes: &volumes
+  volumes:
+    - ../..:/app
+
+x-build: &build
+  build:
+    context: ../..
+    dockerfile: docker/dev/Dockerfile
+
+services:
+  dev:
+    tty: true
+    <<: [*build, *volumes]
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=development
+    command: bun dev
+    profiles: ["dev"]
+
+  linter:
+    tty: true
+    <<: [*build, *volumes]
+    command: bun lint:fix
+    profiles: ["check"]
+
+  format:
+    tty: true
+    <<: [*build, *volumes]
+    command: bun format:fix
+    profiles: ["check"]
+
+  check:
+    tty: true
+    <<: [*build, *volumes]
+    command: bun check:fix
+    profiles: ["check"]
