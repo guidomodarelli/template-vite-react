@@ -29,8 +29,8 @@ install_bun() {
 
 check_bun() {
     if ! command -v bun >/dev/null; then
-        bun="$(printCyan -b bun)"
-        printError "No se encontró el comando '$bun'."
+        bun="$(logCyan -b bun)"
+        logError "No se encontró el comando '$bun'."
         echo
 
         # Pregunta al usuario si desea instalar bun
@@ -41,19 +41,19 @@ check_bun() {
         fi
 
         echo
-        printInfo
-        printInfo "Para instalar '$bun', ejecuta el siguiente comando:"
-        printInfo
-        printInfo "$(styleText -u -- "Linux"):"
-        printInfo
-        printInfo "  $(printCommand "curl -fsSL https://bun.sh/install | bash")"
-        printInfo
-        printInfo "$(styleText -u -- Windows):"
-        printInfo
-        printInfo "  $(printCommand "powershell -c \"irm bun.sh/install.ps1 | iex\"")"
-        printInfo
-        printInfo "Después de instalar '$bun', vuelve a ejecutar este script ($(printGreen -- $0))."
-        printInfo
+        logInfo
+        logInfo "Para instalar '$bun', ejecuta el siguiente comando:"
+        logInfo
+        logInfo "$(styleText -u -- "Linux"):"
+        logInfo
+        logInfo "  $(logCommand "curl -fsSL https://bun.sh/install | bash")"
+        logInfo
+        logInfo "$(styleText -u -- Windows):"
+        logInfo
+        logInfo "  $(logCommand "powershell -c \"irm bun.sh/install.ps1 | iex\"")"
+        logInfo
+        logInfo "Después de instalar '$bun', vuelve a ejecutar este script ($(logGreen -- $0))."
+        logInfo
         exit 1
     fi
 }
@@ -62,16 +62,16 @@ check_bun
 
 commands() {
     {
-        echo "  $(printCyan "build")   @ Construye la imagen de desarrollo"
-        echo "  $(printCyan "up")      @ Inicia todos los servicios"
-        echo "  $(printCyan "down")    @ Detiene y elimina los servicios y volúmenes"
-        echo "  $(printCyan "start")   @ Inicia servicios detenidos"
-        echo "  $(printCyan "stop")    @ Detiene los servicios sin eliminarlos"
-        echo "  $(printCyan "restart") @ Reinicia todos los servicios"
-        echo "  $(printCyan "lint")    @ Ejecuta el linter"
-        echo "  $(printCyan "format")  @ Ejecuta el formateador de código"
-        echo "  $(printCyan "check")   @ Ejecuta linter y formateador"
-        echo "  $(printCyan "help")    @ Muestra esta ayuda"
+        echo "  $(logCyan "build")   @ Construye la imagen de desarrollo"
+        echo "  $(logCyan "up")      @ Inicia todos los servicios"
+        echo "  $(logCyan "down")    @ Detiene y elimina los servicios y volúmenes"
+        echo "  $(logCyan "start")   @ Inicia servicios detenidos"
+        echo "  $(logCyan "stop")    @ Detiene los servicios sin eliminarlos"
+        echo "  $(logCyan "restart") @ Reinicia todos los servicios"
+        echo "  $(logCyan "lint")    @ Ejecuta el linter"
+        echo "  $(logCyan "format")  @ Ejecuta el formateador de código"
+        echo "  $(logCyan "check")   @ Ejecuta linter y formateador"
+        echo "  $(logCyan "help")    @ Muestra esta ayuda"
     } | column -t -s "@"
 }
 
@@ -88,7 +88,7 @@ function usage() {
 # Verifica si el archivo de Docker Compose existe
 function check_docker_compose_file() {
     if [ ! -f "$DOCKER_COMPOSE_PATH" ]; then
-        printError "No se encontró el archivo $(printCyan -u $DOCKER_COMPOSE_FILE) en la ruta $(printCyan -u "$(dirname $DOCKER_COMPOSE_PATH)")"
+        logError "No se encontró el archivo $(logCyan -u $DOCKER_COMPOSE_FILE) en la ruta $(logCyan -u "$(dirname $DOCKER_COMPOSE_PATH)")"
         exit 1
     fi
 }
@@ -103,56 +103,56 @@ function docker_compose_dev() {
 
 # Función para buildear la imagen de desarrollo
 function build() {
-    printInfo "Construyendo la imagen de desarrollo..."
+    logInfo "Construyendo la imagen de desarrollo..."
     docker_compose_dev build
 }
 
 # Función para iniciar los servicios
 function up() {
-    printInfo "Iniciando los servicios con Docker Compose..."
+    logInfo "Iniciando los servicios con Docker Compose..."
     bun install
     docker_compose_dev up
 }
 
 # Función para detener y eliminar los servicios
 function down() {
-    printInfo "Deteniendo los servicios con Docker Compose..."
+    logInfo "Deteniendo los servicios con Docker Compose..."
     docker_compose_dev down --volumes
 }
 
 # Función para iniciar los servicios detenidos
 function start() {
-    printInfo "Iniciando los servicios detenidos con Docker Compose..."
+    logInfo "Iniciando los servicios detenidos con Docker Compose..."
     docker_compose_dev start
 }
 
 # Función para detener los servicios sin eliminarlos
 function stop() {
-    printInfo "Deteniendo los servicios con Docker Compose..."
+    logInfo "Deteniendo los servicios con Docker Compose..."
     docker_compose_dev stop
 }
 
 # Función para reiniciar los servicios
 function restart() {
-    printInfo "Reiniciando los servicios con Docker Compose..."
+    logInfo "Reiniciando los servicios con Docker Compose..."
     docker_compose_dev restart
 }
 
 # Función para ejecutar el linter
 function lint() {
-    printInfo "Ejecutando linter con Docker Compose..."
+    logInfo "Ejecutando linter con Docker Compose..."
     docker_compose up linter
 }
 
 # Función para ejecutar el formateo de código
 function format() {
-    printInfo "Ejecutando formateo de código con Docker Compose..."
+    logInfo "Ejecutando formateo de código con Docker Compose..."
     docker_compose up format
 }
 
 # Función para ejecutar ambos, lint y format
 function check() {
-    printInfo "Ejecutando linter y formateo de código con Docker Compose..."
+    logInfo "Ejecutando linter y formateo de código con Docker Compose..."
     docker_compose --profile check up
 }
 
@@ -194,8 +194,8 @@ function main() {
         usage
         ;;
     *)
-        printError "Comando no encontrado: '$(printCyan -b -- "$1")'"
-        printInfo "Ejecutando el script interactivo..."
+        logError "Comando no encontrado: '$(logCyan -b -- "$1")'"
+        logInfo "Ejecutando el script interactivo..."
         if command -v fzf >/dev/null; then
             cmd=$(commands | fzf --header="Selecciona un comando con ENTER para confirmar" --prompt="Selecciona un comando > ")
             if [ -n "$cmd" ]; then
