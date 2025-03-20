@@ -1,8 +1,26 @@
 #!/usr/bin/env sh
 
-ROOT_DIR=$(git rev-parse --show-toplevel)
+logBlue() {
+  printf "\033[34;1m%s\033[m" "$@"
+}
 
-source "$ROOT_DIR/scripts/styleText.sh"
+logGreen() {
+  printf "\033[32;1m%s\033[m" "$@"
+}
+
+logFormat() {
+  local text="$1"
+  shift
+  printf "[ $text ] %s\n" "$@"
+}
+
+logInfo() {
+  logFormat "$(logBlue "INFO")" "$@"
+}
+
+logSuccess() {
+  logFormat "$(logGreen "SUCCESS")" "✅ $@"
+}
 
 files=$(git diff-index --cached --name-only --diff-filter=ACMR HEAD | grep -vE "bun.lock")
 eslint_files=$(echo "$files" | grep -E ".*\.([jt]sx?|json|css)$" || true)
