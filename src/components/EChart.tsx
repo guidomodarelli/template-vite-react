@@ -9,7 +9,6 @@ interface EChartProps {
 }
 
 export const EChart: React.FC<EChartProps> = (props) => {
-  const { logger } = props;
   const { open } = useSidebar();
   const container = useRef<HTMLDivElement>(null);
   const chart = useRef<echarts.ECharts>(null);
