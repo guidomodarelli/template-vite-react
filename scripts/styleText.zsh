@@ -149,19 +149,19 @@ styleLogMessage() {
 }
 
 logInfo() {
-  styleLogMessage "$(logBlue "INFO")" "🔵 $@"
+  styleLogMessage "$(logBlue "INFO")" "$@"
 }
 
 logSuccess() {
-  styleLogMessage "$(logGreen "SUCCESS")" "✅ $@"
+  styleLogMessage "$(logGreen "SUCCESS")" "$@"
 }
 
 logWarn() {
-  styleLogMessage "$(logYellow "WARN")" "⚠️ $@"
+  styleLogMessage "$(logYellow "WARN")" "$@"
 }
 
 logError() {
-  styleLogMessage "$(logRed "ERROR")" "❌ $@"
+  styleLogMessage "$(logRed "ERROR")" "$@"
 }
 
 # Function that formats command output with a colored prompt
