@@ -1,11 +1,15 @@
 #!/usr/bin/env sh
 
+BLUE='\033[34;1m'
+GREEN='\033[32;1m'
+RESET='\033[m'
+
 logBlue() {
-  printf "\033[34;1m%s\033[m" "$@"
+  printf "$BLUE%s$RESET" "$@"
 }
 
 logGreen() {
-  printf "\033[32;1m%s\033[m" "$@"
+  printf "$GREEN%s$RESET" "$@"
 }
 
 logFormat() {
@@ -15,7 +19,7 @@ logFormat() {
 }
 
 logInfo() {
-  logFormat "$(logBlue "INFO")" "$@"
+  logFormat "$(logBlue "INFO")" "ℹ️  $@"
 }
 
 logSuccess() {
