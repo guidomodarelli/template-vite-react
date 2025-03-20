@@ -142,16 +142,26 @@ logGray() {
   styleText -c gray "$@"
 }
 
+styleLogMessage() {
+  local text="$1"
+  shift
+  printf "[ $text ] %s\n" "$@"
+}
+
 logInfo() {
-  printf "[ $(logBlue "INFO") ] $@\n"
+  styleLogMessage "$(logBlue "INFO")" "🔵 $@"
+}
+
+logSuccess() {
+  styleLogMessage "$(logGreen "SUCCESS")" "✅ $@"
 }
 
 logWarn() {
-  printf "[ $(logYellow "WARN") ] $@\n"
+  styleLogMessage "$(logYellow "WARN")" "⚠️ $@"
 }
 
 logError() {
-  printf "[ $(logRed "ERROR") ] $@\n"
+  styleLogMessage "$(logRed "ERROR")" "❌ $@"
 }
 
 # Function that formats command output with a colored prompt
