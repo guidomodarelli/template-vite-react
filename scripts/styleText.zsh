@@ -27,6 +27,34 @@ UNDERLINE=4
 REVERSE=7
 STRIKETHROUGH=9
 
+# Function to log styleText errors to file
+logStyleTextError() {
+  local errorMsg="$1"
+  local timestamp=$(date +"%Y%m%d_%H%M%S")
+  local logFile="/tmp/styleText_error_${timestamp}.log"
+
+  # Create help text
+  local help=""
+  help+="$BREAK_LINE\n"
+  help+="Usage: styleText [OPTIONS] TEXT\n"
+  help+="$BREAK_LINE\n"
+  help+="Options:\n"
+
+  {
+    echo -e "$errorMsg"
+    echo -e "$help"
+    echo
+    echo "  -b, --bold            | Bold text"
+    echo "  -i, --italic          | Italic text"
+    echo "  -u, --underline       | Underline text"
+    echo "  -s, --strikethrough   | Strikethrough text"
+    echo "  -r, --reverse         | Reverse colors"
+    echo "  -c, --color           | Text color name ($(available_colors))"
+  } | column -t -s '|' >"$logFile"
+
+  echo "Error log written to $logFile" >&2
+}
+
 styleText() {
   local MODIFIERS=""
   while [[ $# -gt 0 ]]; do
@@ -60,8 +88,9 @@ styleText() {
         MODIFIERS="${MODIFIERS};$COLOR_CODE"
         shift 2
       else
-        echo "Invalid color name: $2"
-        echo "Available colors: $(available_colors)"
+        local errorMsg="Invalid color name: $2\n"
+        errorMsg+="Available colors: $(available_colors)"
+        logStyleTextError "$errorMsg"
         return 1
       fi
       ;;
@@ -70,24 +99,9 @@ styleText() {
       break
       ;;
     *)
-      echo
-      echo
-      logError "Unknown option: $0 '$(logCyan -i -- "$1")'"
-      local help=""
-      help+="Usage: styleText [OPTIONS] TEXT\n"
-      help+="Options:\n"
-      printf "$help"
-      {
-        echo "  $(logYellow -- -b), $(logYellow -- --bold)|$(logGray "Bold text")"
-        echo "  $(logYellow -- -i), $(logYellow -- --italic)|$(logGray "Italic text")"
-        echo "  $(logYellow -- -u), $(logYellow -- --underline)|$(logGray "Underline text")"
-        echo "  $(logYellow -- -s), $(logYellow -- --strikethrough)|$(logGray "Strikethrough text")"
-        echo "  $(logYellow -- -r), $(logYellow -- --reverse)|$(logGray "Reverse colors")"
-        echo "  $(logYellow -- -c), $(logYellow -- --color)|$(logGray "Text color name ($(available_colors))")"
-      } | column -t -s '|'
-      echo $FORCE_NEW_LINE
-      echo $FORCE_NEW_LINE
-      exit 1
+      local errorMsg="Unknown option: $0 '$1'"
+      logStyleTextError "$errorMsg"
+      return 1
       ;;
     esac
   done
